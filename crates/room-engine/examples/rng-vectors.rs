@@ -1,0 +1,122 @@
+//! Generate the shared random-stream vectors.
+//!
+//! `crates/room-engine/src/rng.rs` and `lib/room-rng.ts` are the same
+//! generator written twice. That is a claim, and a claim about two
+//! implementations in two languages is worth exactly what checks it. This
+//! writes `tests/vectors/rng.json`, which both test suites read: the Rust
+//! proves it still produces these numbers, the TypeScript proves it produces
+//! the same ones, and neither can drift without a test going red.
+//!
+//! The file is generated from the Rust because the Rust is where the
+//! generator's contract is documented. Regenerate with:
+//!
+//! ```text
+//! cargo run -p room-engine --example rng-vectors > tests/vectors/rng.json
+//! ```
+//!
+//! and expect the diff to be empty. A non-empty diff means the stream moved,
+//! which means every saved room resumes into a different one.
+//!
+//! # Why these seeds
+//!
+//! Zero, because it is the value that would break a generator seeded by
+//! assignment rather than by mixing. One, because it is adjacent to zero and
+//! must not look like it. `2^32 - 1` and `2^32`, because they straddle the
+//! word boundary the seed is split across, which is the one place a
+//! JavaScript port can silently agree for small seeds and diverge for large
+//! ones. `MAX_SAFE_INTEGER`, because it is the largest seed a JavaScript
+//! number carries exactly and therefore the largest an operator can write
+//! down and type back in.
+
+use room_engine::rng::Rng;
+
+/// Values taken per seed. Enough to catch a state word that is right for the
+/// first few draws and wrong afterwards, which is what a mis-ported rotate
+/// looks like.
+const SAMPLES: usize = 32;
+
+/// Seeds the two implementations must agree on. See the module docs.
+const SEEDS: [u64; 6] = [0, 1, 12_345, 0xFFFF_FFFF, 0x1_0000_0000, (1 << 53) - 1];
+
+/// Where the stream is checked after a restore, chosen to be past the warm-up
+/// and not a multiple of anything in the generator.
+const RESTORE_AT: u64 = 1_000;
+
+fn main() {
+    let streams: Vec<serde_json::Value> = SEEDS
+        .into_iter()
+        .map(|seed| {
+            let mut rng = Rng::new(seed);
+            let words: Vec<u32> = (0..SAMPLES).map(|_| rng.next_u32()).collect();
+
+            // The derived forms, each from a generator of its own, so a vector
+            // records what a caller actually gets rather than what is left
+            // over after the previous line consumed the stream.
+            let mut unit = Rng::new(seed);
+            let units: Vec<f64> = (0..SAMPLES).map(|_| unit.next_f64()).collect();
+
+            let mut spread = Rng::new(seed);
+            let ranges: Vec<f64> = (0..SAMPLES).map(|_| spread.range(-2.5, 7.25)).collect();
+
+            // A probability the room actually uses: `eventChance` lands near
+            // this, so the vector exercises the arm that matters rather than a
+            // half that would pass with a broken low bit.
+            let mut rolled = Rng::new(seed);
+            let chances: Vec<bool> = (0..SAMPLES).map(|_| rolled.chance(0.08)).collect();
+
+            let mut picked = Rng::new(seed);
+            let indices: Vec<Option<usize>> = (0..SAMPLES).map(|_| picked.index(7)).collect();
+
+            // `chance` and `index` draw even when they cannot fire, so that the
+            // stream does not depend on the operator's settings. A vector for
+            // the degenerate cases is how that stays true.
+            let mut never = Rng::new(seed);
+            let never_fires = (0..SAMPLES).any(|_| never.chance(0.0));
+            let mut always = Rng::new(seed);
+            let always_fires = (0..SAMPLES).all(|_| always.chance(1.0));
+            let mut empty = Rng::new(seed);
+            let empty_picks: Vec<Option<usize>> = (0..SAMPLES).map(|_| empty.index(0)).collect();
+
+            // Restoring replays the stream rather than storing state words, so
+            // the vector pins the position as well as the values.
+            let restored = Rng::restore(seed, RESTORE_AT);
+            let mut advanced = Rng::new(seed);
+            for _ in 0..RESTORE_AT {
+                advanced.next_u32();
+            }
+            let mut after = Rng::restore(seed, RESTORE_AT);
+            let after_restore: Vec<u32> = (0..8).map(|_| after.next_u32()).collect();
+
+            serde_json::json!({
+                "seed": seed,
+                "words": words,
+                "units": units,
+                "ranges": ranges,
+                "chances": chances,
+                "indices": indices,
+                "neverFiresAtZero": !never_fires,
+                "alwaysFiresAtOne": always_fires,
+                "emptyPicks": empty_picks,
+                "drawsAfterSamples": SAMPLES,
+                "restoreAt": RESTORE_AT,
+                "restoreMatchesAdvance": restored == advanced,
+                "afterRestore": after_restore,
+            })
+        })
+        .collect();
+
+    let document = serde_json::json!({
+        "//": "Generated by `cargo run -p room-engine --example rng-vectors`. \
+               Shared evidence that room_engine::rng and lib/room-rng.ts are the \
+               same generator. Do not edit by hand; a non-empty diff after \
+               regenerating means the random stream moved, and every saved room \
+               resumes into a different one.",
+        "algorithm": "sfc32 seeded through splitmix32, 12 outputs discarded",
+        "samples": SAMPLES,
+        "streams": streams,
+    });
+    println!(
+        "{}",
+        serde_json::to_string_pretty(&document).unwrap_or_default()
+    );
+}

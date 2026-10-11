@@ -1,0 +1,64 @@
+# Rust half of the installation.
+#
+# Three browser-facing crates and one native binary, kept apart so the part
+# that has to be right in a gallery at 2am can be tested without a browser,
+# a GPU, a camera or a network:
+#
+#   room-protocol  serialisable types crossing every boundary
+#   room-engine    the deterministic room brain; no wasm, no I/O, no clock
+#   room-wasm      the wasm-bindgen adapter, and nothing else
+#   roomd          the supervisor: process lifecycle, never cognition
+#
+# `room-engine` compiling and testing natively is the point of the split. A
+# core that can only run in a browser can only be debugged in a browser.
+[workspace]
+resolver = "3"
+members = [
+    "crates/room-protocol",
+    "crates/room-engine",
+    "crates/room-wasm",
+    "crates/roomd",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.89"
+license = "AGPL-3.0-or-later"
+publish = false
+
+[workspace.dependencies]
+room-protocol = { path = "crates/room-protocol" }
+room-engine = { path = "crates/room-engine" }
+serde = { version = "1", default-features = false, features = ["derive", "alloc"] }
+serde_json = "1"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_debug_implementations = "warn"
+
+[workspace.lints.clippy]
+# The production runtime must not panic on recoverable failure. These are the
+# executable form of that rule rather than a paragraph in the standards.
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+indexing_slicing = "deny"
+arithmetic_side_effects = "allow"
+float_cmp = "allow"
+must_use_candidate = "allow"
+missing_errors_doc = "allow"
+module_name_repetitions = "allow"
+pedantic = { level = "warn", priority = -1 }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+
+# The WASM module ships over a file:// or localhost origin, so size matters
+# less than it would on the web, but a smaller module still starts faster on
+# the cheap mini-PCs these installations actually run on.
+[profile.release.package.room-wasm]
+opt-level = "s"

@@ -1,0 +1,3 @@
+# Test files build regexes from constant names and write fake executables
+# into temp dirs; none of it ships or sees outside input.
+lib/*.test.ts

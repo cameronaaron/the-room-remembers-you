@@ -1,0 +1,14 @@
+[package]
+name = "room-wasm"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+[lib]
+crate-type = ["cdylib", "rlib"]
+[dependencies]
+room-engine.workspace = true
+wasm-bindgen = "=0.2.128"
+[lints]
+workspace = true

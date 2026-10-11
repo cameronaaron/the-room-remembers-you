@@ -1,0 +1,544 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) * 0.65);
+  --radius-md: calc(var(--radius) * 0.85);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.35);
+}
+
+:root {
+  --paper: #eeede8;
+  --graphite: #252827;
+  --background: #f3f2ed;
+  --foreground: #242725;
+  --card: #f3f2ed;
+  --card-foreground: #242725;
+  --popover: #eeede8;
+  --popover-foreground: #242725;
+  --primary: #29302d;
+  --primary-foreground: #f4f3ef;
+  --secondary: #ddded8;
+  --secondary-foreground: #29302d;
+  --muted: #e3e2dc;
+  --muted-foreground: #696d69;
+  --accent: #d8ddd8;
+  --accent-foreground: #29302d;
+  --destructive: #783b35;
+  --border: rgba(39, 44, 41, 0.16);
+  --input: rgba(39, 44, 41, 0.16);
+  --ring: #66736e;
+  --radius: 0.25rem;
+}
+
+.dark {
+  --background: #1d201e;
+  --foreground: #edece7;
+  --card: #222624;
+  --card-foreground: #edece7;
+  --popover: #222624;
+  --popover-foreground: #edece7;
+  --primary: #e4e7e2;
+  --primary-foreground: #242826;
+  --secondary: #343a37;
+  --secondary-foreground: #edece7;
+  --muted: #303532;
+  --muted-foreground: #a7ada8;
+  --accent: #3a4641;
+  --accent-foreground: #f0f2ed;
+  --destructive: #d27e74;
+  --border: rgba(242, 244, 239, 0.13);
+  --input: rgba(242, 244, 239, 0.16);
+  --ring: #9eaaa4;
+}
+
+* { box-sizing: border-box; }
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--paper);
+  color: var(--graphite);
+}
+
+body { font-family: Arial, Helvetica, sans-serif; }
+button, input, select { font: inherit; }
+
+.installation-shell,
+.projection-stage,
+.projection {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.installation-shell { isolation: isolate; background: #eeede8; }
+.projection-stage { position: fixed; inset: 0; transform-origin: center; transition: transform 180ms ease, clip-path 180ms ease; }
+/* Two surfaces: a canvas cannot hold both a WebGL2 and a 2D context, so the
+   particle field and the trace renderer each get their own and stack. */
+.projection { display: block; position: absolute; inset: 0; width: 100%; height: 100%; }
+.projection-swarm { z-index: 0; }
+.projection-traces { z-index: 1; }
+.sensor-video { position: fixed; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+.threshold {
+  position: fixed;
+  z-index: 5;
+  left: clamp(1.5rem, 6vw, 6rem);
+  bottom: clamp(2rem, 9vh, 7rem);
+  width: min(36rem, calc(100vw - 3rem));
+  animation: appear 2.2s ease both;
+}
+
+.eyebrow {
+  margin: 0 0 1.15rem;
+  color: #676d69;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+h1 {
+  max-width: 10ch;
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(3.5rem, 9vw, 8rem);
+  font-weight: 400;
+  letter-spacing: -0.055em;
+  line-height: 0.86;
+}
+
+.privacy-note {
+  max-width: 32rem;
+  margin: 2rem 0 1.5rem;
+  color: #616662;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.threshold button {
+  border: 1px solid rgba(37, 40, 39, 0.42);
+  border-radius: 999px;
+  background: rgba(242, 241, 237, 0.5);
+  color: inherit;
+  cursor: pointer;
+  padding: 0.78rem 1.2rem;
+  transition: background 300ms ease, color 300ms ease;
+}
+
+.threshold button:hover,
+.threshold button:focus-visible {
+  background: var(--graphite);
+  color: var(--paper);
+  outline: none;
+}
+
+.operator-hint {
+  display: inline-block;
+  margin: 0 0 0 1rem;
+  color: rgba(37, 40, 39, 0.42);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.sensor-pending {
+  position: fixed;
+  z-index: 5;
+  inset: auto 0 2rem;
+  margin: 0;
+  color: rgba(37, 40, 39, 0.48);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  text-align: center;
+  animation: breathe 4s ease-in-out infinite;
+}
+
+.operator-sheet {
+  width: min(31rem, 94vw) !important;
+  max-width: none !important;
+  gap: 0 !important;
+  border-color: rgba(37, 42, 39, 0.18) !important;
+  background: rgba(238, 237, 232, 0.97) !important;
+  box-shadow: -24px 0 70px rgba(28, 33, 30, 0.13) !important;
+  backdrop-filter: blur(22px);
+}
+
+.operator-header { border-bottom: 1px solid var(--border); padding: 1.6rem !important; }
+.operator-header [data-slot='sheet-title'] { font-family: Georgia, 'Times New Roman', serif; font-size: 1.65rem; font-weight: 400; }
+.console-kicker { margin: 0 0 0.5rem; color: #727873; font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; }
+.operator-scroll { min-height: 0; overflow-y: auto; padding-bottom: 3rem; }
+
+.status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  margin: 0;
+  background: var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.status-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 0.5rem;
+  align-items: center;
+  min-width: 0;
+  padding: 0.85rem 1rem;
+  background: #eeede8;
+  color: #696f6b;
+  font-size: 0.7rem;
+}
+
+.status-item strong { grid-column: 2; overflow: hidden; color: #2c312e; font-size: 0.8rem; font-weight: 500; text-overflow: ellipsis; text-transform: capitalize; white-space: nowrap; }
+.status-dot { width: 0.42rem; height: 0.42rem; border-radius: 50%; background: #9b665e; }
+.status-dot.is-good { background: #657b6f; box-shadow: 0 0 0.5rem rgba(83, 111, 97, 0.35); }
+
+.console-section { padding: 1.4rem 1.6rem; border-bottom: 1px solid var(--border); }
+.console-section h3 { margin: 0 0 1.25rem; color: #5f6561; font-size: 0.69rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; }
+.motion-mask { display: block; width: 100%; aspect-ratio: 40 / 23; border: 1px solid rgba(37, 42, 39, 0.16); border-radius: 0.3rem; background: #252a27; }
+.motion-mask-background { fill: #252a27; }
+.motion-cell-candidate { fill: rgba(230, 232, 224, 0.28); }
+.motion-cell-accepted { fill: rgba(239, 241, 233, 0.96); }
+.diagnostic-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; margin: 0.75rem 0; background: var(--border); }
+.diagnostic-grid > div { display: grid; gap: 0.15rem; padding: 0.6rem 0.7rem; background: #eeede8; }
+.diagnostic-grid span { color: #777c78; font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.diagnostic-grid strong { overflow: hidden; color: #303532; font-size: 0.76rem; font-weight: 500; text-overflow: ellipsis; text-transform: capitalize; white-space: nowrap; }
+.slider-row { display: grid; grid-template-columns: 1fr auto; gap: 0.55rem; align-items: center; margin-bottom: 1.25rem; color: #343936; font-size: 0.82rem; }
+.slider-row output { color: #707571; font-variant-numeric: tabular-nums; }
+.slider-row [data-slot='slider'] { grid-column: 1 / -1; }
+.slider-row [data-slot='slider-range'] { background: #52655c; }
+.toggle-row { display: flex; gap: 1rem; align-items: center; justify-content: space-between; margin: 1rem 0; color: #343936; font-size: 0.82rem; }
+.toggle-row > span { display: grid; gap: 0.2rem; }
+.toggle-row strong { font-weight: 400; }
+.toggle-row small { max-width: 20rem; color: #777c78; font-size: 0.68rem; line-height: 1.4; }
+.select-row { display: flex; align-items: center; justify-content: space-between; margin: 1rem 0; color: #343936; font-size: 0.82rem; }
+.select-row select { border: 1px solid var(--border); border-radius: 0.25rem; background: transparent; padding: 0.35rem 0.5rem; color: inherit; }
+.console-button { width: 100%; margin-top: 0.7rem; }
+.button-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; margin-top: 0.75rem; }
+.control-note { margin: 0.7rem 0 1rem; color: #777c78; font-size: 0.72rem; line-height: 1.5; }
+/* A setting held at zero is off, and off has to read differently from advice. */
+.control-note-off { color: #c9a227; margin-top: 0.35rem; }
+.import-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 2rem;
+  margin-top: 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  color: #343936;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+.import-button:hover { background: var(--muted); }
+.import-button input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.last-event { margin: 1.2rem 0 0.3rem; color: #777c78; font-family: Georgia, 'Times New Roman', serif; font-size: 0.8rem; font-style: italic; }
+
+@keyframes appear { from { opacity: 0; transform: translateY(1.5rem); } }
+@keyframes breathe { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.65; } }
+
+@media (max-width: 640px) {
+  .operator-hint { display: block; margin: 1rem 0 0; }
+  .status-grid { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* ---------------------------------------------------------------------------
+   Dark-room chrome.
+
+   In `room` mode the projector paints black and adds light only where the room
+   remembers something. Any paper-toned panel — the threshold text, the operator
+   console — is therefore a bright rectangle thrown onto the gallery wall, and
+   one more light source for the camera to reject. The chrome follows the
+   projection surface.
+   --------------------------------------------------------------------------- */
+
+:root[data-projection='room'] {
+  --paper: #0b0d0f;
+  --graphite: #e6ece9;
+  /* The console is built from the shared UI primitives, so the base tokens have
+     to move with the installation tokens or controls keep a paper-toned fill. */
+  --background: #0b0d0f;
+  --foreground: #d8e2de;
+  --card: #0e1214;
+  --card-foreground: #d8e2de;
+  --popover: #0e1214;
+  --popover-foreground: #d8e2de;
+  --primary: #d8e2de;
+  --primary-foreground: #0b0d0f;
+  --secondary: #18201f;
+  --secondary-foreground: #d8e2de;
+  --accent: #1b2422;
+  --accent-foreground: #eaf1ee;
+  --destructive: #b4544a;
+  --border: rgba(180, 208, 200, 0.16);
+  --input: rgba(180, 208, 200, 0.16);
+  --muted: #161a1d;
+  --muted-foreground: #8ea39c;
+  --ring: #4d7d72;
+}
+
+:root[data-projection='room'] .installation-shell { background: #000000; }
+:root[data-projection='room'] .threshold { color: #cfd9d5; }
+:root[data-projection='room'] .eyebrow { color: #7f938c; }
+:root[data-projection='room'] .privacy-note { color: #91a49d; }
+:root[data-projection='room'] .operator-hint { color: rgba(198, 214, 208, 0.38); }
+:root[data-projection='room'] .sensor-pending { color: rgba(198, 214, 208, 0.5); }
+
+:root[data-projection='room'] .threshold button {
+  border-color: rgba(190, 214, 206, 0.34);
+  background: rgba(214, 232, 226, 0.06);
+  color: #dbe5e1;
+}
+
+:root[data-projection='room'] .threshold button:hover,
+:root[data-projection='room'] .threshold button:focus-visible {
+  background: #dbe5e1;
+  color: #0b0d0f;
+}
+
+:root[data-projection='room'] .operator-sheet {
+  border-color: rgba(180, 208, 200, 0.16) !important;
+  background: rgba(11, 14, 16, 0.96) !important;
+  color: #cbd6d2;
+  box-shadow: -24px 0 70px rgba(0, 0, 0, 0.6) !important;
+}
+
+:root[data-projection='room'] .console-kicker,
+:root[data-projection='room'] .console-section h3,
+:root[data-projection='room'] .control-note,
+:root[data-projection='room'] .last-event,
+:root[data-projection='room'] .toggle-row small,
+:root[data-projection='room'] .diagnostic-grid span,
+:root[data-projection='room'] .status-item { color: #8ea39c; }
+
+:root[data-projection='room'] .status-item,
+:root[data-projection='room'] .diagnostic-grid > div { background: #0e1214; }
+
+:root[data-projection='room'] .status-item strong,
+:root[data-projection='room'] .diagnostic-grid strong,
+:root[data-projection='room'] .slider-row,
+:root[data-projection='room'] .toggle-row,
+:root[data-projection='room'] .select-row,
+:root[data-projection='room'] .import-button { color: #d3ded9; }
+
+:root[data-projection='room'] .slider-row output { color: #93a8a1; }
+:root[data-projection='room'] .slider-row [data-slot='slider-range'] { background: #6fae9d; }
+:root[data-projection='room'] .status-dot.is-good { background: #6fae9d; box-shadow: 0 0 0.5rem rgba(111, 174, 157, 0.4); }
+:root[data-projection='room'] .select-row select option { background: #0e1214; color: #d3ded9; }
+
+:root[data-projection='room'] .motion-mask { background: #070a0b; }
+:root[data-projection='room'] .motion-mask-background { fill: #070a0b; }
+
+/* ---------------------------------------------------------------------------
+   The room speaking.
+
+   Rare on purpose. It lands next to whoever caused it, so the line reads
+   as addressed rather than as a caption, and it is gone before a second one can
+   arrive. Everything about the treatment is meant to stay under the image.
+   --------------------------------------------------------------------------- */
+
+.room-utterance {
+  position: absolute;
+  z-index: 2;
+  transform: translate(-50%, -50%);
+  max-width: min(24rem, 60vw);
+  margin: 0;
+  color: rgba(228, 236, 233, 0.92);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.1rem, 2.1vw, 2rem);
+  font-style: italic;
+  line-height: 1.35;
+  text-align: center;
+  text-shadow: 0 0 3.5rem rgba(0, 0, 0, 0.95), 0 0 1.4rem rgba(0, 0, 0, 0.9), 0 0 0.4rem rgba(0, 0, 0, 0.85);
+  pointer-events: none;
+  animation: utterance 7s ease-in-out both;
+}
+
+:root[data-projection='paper'] .room-utterance {
+  color: rgba(26, 30, 28, 0.88);
+  text-shadow: 0 0 2rem rgba(238, 237, 232, 0.95);
+}
+
+@keyframes utterance {
+  0% { opacity: 0; }
+  14% { opacity: 1; }
+  76% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ---------------------------------------------------------------------------
+   Sensing instrument (D).
+
+   Readable in a dark room, over the projection, without stealing so much of the
+   screen that the artwork it is diagnosing becomes invisible.
+   --------------------------------------------------------------------------- */
+
+.sensing-panel {
+  position: fixed;
+  z-index: 40;
+  top: 1rem;
+  left: 1rem;
+  width: min(38rem, calc(100vw - 2rem));
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  padding: 1.1rem 1.25rem 1.4rem;
+  border: 1px solid rgba(150, 190, 180, 0.28);
+  border-radius: 0.5rem;
+  background: rgba(6, 9, 11, 0.93);
+  color: #cfdcd7;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.76rem;
+  line-height: 1.5;
+  backdrop-filter: blur(14px);
+}
+
+.sensing-header { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+.sensing-header h2 { margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: 1.15rem; font-weight: 400; letter-spacing: 0.01em; }
+.sensing-dismiss { color: #6f847d; font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; }
+
+.sensing-verdict { margin: 0.9rem 0 1rem; padding: 0.75rem 0.85rem; border-left: 3px solid; border-radius: 0.25rem; background: rgba(255, 255, 255, 0.035); }
+.sensing-verdict strong { display: block; margin-bottom: 0.35rem; font-size: 0.85rem; font-weight: 600; }
+.sensing-verdict p { margin: 0; color: #9fb2ac; }
+.sensing-verdict.is-ok { border-color: #5fbf9a; }
+.sensing-verdict.is-ok strong { color: #7fd7b4; }
+.sensing-verdict.is-warn { border-color: #d8b268; }
+.sensing-verdict.is-warn strong { color: #e8c887; }
+.sensing-verdict.is-blocked { border-color: #cf6a5e; }
+.sensing-verdict.is-blocked strong { color: #ec8a7c; }
+
+.sensing-pipeline { display: grid; gap: 1px; margin: 0 0 1rem; padding: 0; background: rgba(150, 190, 180, 0.16); list-style: none; }
+.sensing-pipeline li { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 0.45rem 0.7rem; background: #0a0e10; }
+.sensing-pipeline li > span { color: #7d918b; }
+.sensing-pipeline li > strong { font-weight: 500; }
+.sensing-pipeline li.is-ok > strong { color: #7fd7b4; }
+.sensing-pipeline li.is-stalled > strong { color: #8a938f; }
+.sensing-pipeline li[data-blocked] { background: rgba(207, 106, 94, 0.14); }
+.sensing-pipeline li[data-blocked] > strong { color: #ec8a7c; }
+
+.sensing-grids { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 0.9rem; margin-bottom: 1rem; align-items: start; }
+.sensing-grids figure { margin: 0; }
+.sensing-grids figcaption { margin-bottom: 0.35rem; color: #7d918b; font-size: 0.68rem; }
+.sensing-mask { display: block; width: 100%; border: 1px solid rgba(150, 190, 180, 0.2); border-radius: 0.25rem; }
+.sensing-mask-bg { fill: #05080a; }
+.sensing-mask .cell-candidate { fill: rgba(190, 214, 208, 0.3); }
+.sensing-mask .cell-accepted { fill: #eaf3ef; }
+.sensing-mask .track-live { fill: none; stroke: #6fd0ff; stroke-width: 0.5; }
+.sensing-mask .track-hidden { fill: none; stroke: rgba(216, 178, 104, 0.75); stroke-dasharray: 1 1; stroke-width: 0.5; }
+.sensing-mask .track-label { fill: #6fd0ff; font-size: 2.6px; font-family: ui-monospace, monospace; }
+
+.sensing-numbers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; margin: 0; background: rgba(150, 190, 180, 0.16); }
+.sensing-numbers > div { display: flex; justify-content: space-between; gap: 0.75rem; padding: 0.4rem 0.7rem; background: #0a0e10; }
+.sensing-numbers dt { color: #7d918b; }
+.sensing-numbers dd { margin: 0; color: #d3ded9; }
+
+@media (max-width: 640px) {
+  .sensing-numbers { grid-template-columns: 1fr; }
+}
+
+.sensing-export {
+  width: 100%;
+  margin-bottom: 0.8rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid rgba(150, 190, 180, 0.3);
+  border-radius: 0.25rem;
+  background: rgba(150, 190, 180, 0.08);
+  color: #cfdcd7;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.74rem;
+}
+.sensing-export:hover { background: rgba(150, 190, 180, 0.16); }
+
+/* The microphone, made visible. A silent room and a deaf one are otherwise
+   indistinguishable from the outside. */
+.sensing-audio { margin: 0 0 0.9rem; }
+.sensing-audio figcaption { margin-bottom: 0.35rem; color: #7d918b; font-size: 0.68rem; }
+.sensing-meter {
+  position: relative;
+  overflow: hidden;
+  height: 0.85rem;
+  border: 1px solid rgba(150, 190, 180, 0.2);
+  border-radius: 0.2rem;
+  background: #05080a;
+}
+.sensing-meter-fill { display: block; height: 100%; background: linear-gradient(90deg, #2f6f8f, #7dffb0); transition: width 120ms linear; }
+.sensing-meter-threshold { position: absolute; top: -2px; bottom: -2px; width: 2px; background: #e8c887; }
+.sensing-meter-scale { display: flex; justify-content: space-between; margin-top: 0.25rem; color: #7d918b; font-size: 0.64rem; }
+
+/* ---------------------------------------------------------------------------
+   Recovering from a fault.
+
+   Every other failure in the installation is isolated so the rest continues; a
+   render error was the one that took the whole room, and it took it silently.
+   A dark room showing nothing is what a room with nothing to remember looks
+   like, so the pause says one quiet line and then rebuilds itself.
+
+   The wrapper is `display: contents` so that remounting the room by key cannot
+   introduce a box into a layout built on a fixed, full-bleed projection stage.
+   --------------------------------------------------------------------------- */
+
+.room-generation { display: contents; }
+
+.room-recovering {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  /* The projector is the light source in this room. Recovery is not an
+     occasion to turn it up. */
+  background: #000000;
+  color: rgba(228, 236, 233, 0.5);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(0.95rem, 1.5vw, 1.35rem);
+  font-style: italic;
+  letter-spacing: 0.02em;
+  animation: recovering 2.4s ease-in-out infinite;
+}
+
+:root[data-projection='paper'] .room-recovering {
+  background: var(--paper);
+  color: rgba(26, 30, 28, 0.5);
+}
+
+@keyframes recovering {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.85; }
+}
+
+/* Commissioning is an operator checklist, with separate touch targets. */
+.preflight-choice { display: flex; align-items: flex-start; gap: 0.65rem; margin: 0.8rem 0; line-height: 1.5; cursor: pointer; }
+.preflight-choice input { flex: none; margin-top: 0.25rem; }
+.preflight-result { display: block; margin: 1rem 0; font-weight: 600; }
+.preflight-checks { display: grid; gap: 0.7rem; margin: 1rem 0; padding: 0; list-style: none; line-height: 1.5; }
+.preflight-actions { display: grid; gap: 0.6rem; margin: 1rem 0; }

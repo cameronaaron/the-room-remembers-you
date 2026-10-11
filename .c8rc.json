@@ -1,0 +1,29 @@
+{
+  "all": true,
+  "include": [
+    "lib/**/*.ts",
+    "components/**/*.tsx",
+    "app/**/*.tsx",
+    "hooks/**/*.ts",
+    "scripts/**/*.ts",
+    "scripts/**/*.mjs"
+  ],
+  "exclude": [
+    "**/*.test.ts",
+    "lib/test-doubles/**",
+    "scripts/mutation.mjs",
+    "scripts/render-regression/**"
+  ],
+  "reporter": [
+    "text",
+    "html",
+    "json",
+    "json-summary"
+  ],
+  "reports-dir": "reports/coverage",
+  "check-coverage": true,
+  "lines": 100,
+  "statements": 100,
+  "functions": 100,
+  "branches": 100
+}

@@ -1,0 +1,10 @@
+{
+  "//": "The parity harnesses import `public/wasm/`, which is a build product and is not in the repository. Typechecking them from the main config would make `npm run typecheck` — the ordinary frontend iteration command — fail on a clean checkout, or require every frontend change to rebuild the Rust workspace first. They are checked here instead, by `npm run test:parity`, which builds the WASM module immediately beforehand.",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "incremental": false
+  },
+  "include": ["scripts/*-parity.ts", "lib/**/*.ts", "public/wasm/*.d.ts"],
+  "exclude": ["node_modules"]
+}

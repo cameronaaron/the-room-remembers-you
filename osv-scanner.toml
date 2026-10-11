@@ -1,0 +1,8 @@
+# braces 3.0.3 has no fixed release for GHSA-vfj7-8cjw-p6xm (stack exhaustion
+# on deeply nested brace patterns). It is reached only through the shadcn CLI
+# (fast-glob -> micromatch), a dev tool that globs this repository's own
+# files; no visitor or network input reaches it. Revisit when a fix ships.
+[[IgnoredVulns]]
+id = "GHSA-vfj7-8cjw-p6xm"
+ignoreUntil = 2027-01-11
+reason = "dev-only via shadcn CLI; no untrusted input; no fixed release yet"

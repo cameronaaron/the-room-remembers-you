@@ -1,0 +1,278 @@
+{
+  "voice": "af_heart",
+  "sampleRate": 24000,
+  "lines": [
+    {
+      "id": "forgetting-0",
+      "text": "i am no longer certain this happened.",
+      "file": "forgetting-0.wav",
+      "durationMs": 1890,
+      "peak": 0.5836,
+      "rms": 0.0843
+    },
+    {
+      "id": "forgetting-1",
+      "text": "i cannot remember where this ended.",
+      "file": "forgetting-1.wav",
+      "durationMs": 1838,
+      "peak": 0.6521,
+      "rms": 0.0843
+    },
+    {
+      "id": "stillness-0",
+      "text": "you stopped.",
+      "file": "stillness-0.wav",
+      "durationMs": 731,
+      "peak": 0.4636,
+      "rms": 0.0843
+    },
+    {
+      "id": "stillness-1",
+      "text": "you have been still a while.",
+      "file": "stillness-1.wav",
+      "durationMs": 1191,
+      "peak": 0.3794,
+      "rms": 0.0843
+    },
+    {
+      "id": "stillness-2",
+      "text": "something else stood here.",
+      "file": "stillness-2.wav",
+      "durationMs": 1196,
+      "peak": 0.536,
+      "rms": 0.0843
+    },
+    {
+      "id": "stillness-3",
+      "text": "the room is holding your outline.",
+      "file": "stillness-3.wav",
+      "durationMs": 1599,
+      "peak": 0.4802,
+      "rms": 0.0843
+    },
+    {
+      "id": "return-0",
+      "text": "you have walked this before.",
+      "file": "return-0.wav",
+      "durationMs": 1342,
+      "peak": 0.4391,
+      "rms": 0.0843
+    },
+    {
+      "id": "return-1",
+      "text": "you came back.",
+      "file": "return-1.wav",
+      "durationMs": 835,
+      "peak": 0.3931,
+      "rms": 0.0843
+    },
+    {
+      "id": "return-2",
+      "text": "this line is yours, twice.",
+      "file": "return-2.wav",
+      "durationMs": 1509,
+      "peak": 0.5205,
+      "rms": 0.0843
+    },
+    {
+      "id": "convergence-0",
+      "text": "someone walked this line before you.",
+      "file": "convergence-0.wav",
+      "durationMs": 1711,
+      "peak": 0.4516,
+      "rms": 0.0843
+    },
+    {
+      "id": "convergence-1",
+      "text": "you are not the first here.",
+      "file": "convergence-1.wav",
+      "durationMs": 1243,
+      "peak": 0.4009,
+      "rms": 0.0843
+    },
+    {
+      "id": "convergence-2",
+      "text": "this path already existed.",
+      "file": "convergence-2.wav",
+      "durationMs": 1576,
+      "peak": 0.5639,
+      "rms": 0.0843
+    },
+    {
+      "id": "false-0",
+      "text": "i am no longer certain this happened.",
+      "file": "false-0.wav",
+      "durationMs": 1887,
+      "peak": 0.5921,
+      "rms": 0.0843
+    },
+    {
+      "id": "false-1",
+      "text": "someone was here. i may be wrong.",
+      "file": "false-1.wav",
+      "durationMs": 1896,
+      "peak": 0.89,
+      "rms": 0.0843
+    },
+    {
+      "id": "false-2",
+      "text": "i have put two people into one memory.",
+      "file": "false-2.wav",
+      "durationMs": 2119,
+      "peak": 0.7198,
+      "rms": 0.0843
+    },
+    {
+      "id": "empty-0",
+      "text": "i am remembering by myself.",
+      "file": "empty-0.wav",
+      "durationMs": 1705,
+      "peak": 0.5989,
+      "rms": 0.0843
+    },
+    {
+      "id": "empty-1",
+      "text": "there is no one here. it continues.",
+      "file": "empty-1.wav",
+      "durationMs": 2076,
+      "peak": 0.5849,
+      "rms": 0.0843
+    },
+    {
+      "id": "crowd-0",
+      "text": "i am losing track of you.",
+      "file": "crowd-0.wav",
+      "durationMs": 1403,
+      "peak": 0.7063,
+      "rms": 0.0843
+    },
+    {
+      "id": "crowd-1",
+      "text": "there are more of you than i can hold.",
+      "file": "crowd-1.wav",
+      "durationMs": 1674,
+      "peak": 0.4338,
+      "rms": 0.0843
+    },
+    {
+      "id": "wave-0",
+      "text": "yes. that was seen.",
+      "file": "wave-0.wav",
+      "durationMs": 1190,
+      "peak": 0.6085,
+      "rms": 0.0843
+    },
+    {
+      "id": "wave-1",
+      "text": "you moved without leaving.",
+      "file": "wave-1.wav",
+      "durationMs": 1342,
+      "peak": 0.5681,
+      "rms": 0.0843
+    },
+    {
+      "id": "wave-2",
+      "text": "something moved back.",
+      "file": "wave-2.wav",
+      "durationMs": 1177,
+      "peak": 0.4836,
+      "rms": 0.0843
+    },
+    {
+      "id": "approach-0",
+      "text": "the distance closed.",
+      "file": "approach-0.wav",
+      "durationMs": 1136,
+      "peak": 0.4982,
+      "rms": 0.0843
+    },
+    {
+      "id": "approach-1",
+      "text": "you are nearer than you were.",
+      "file": "approach-1.wav",
+      "durationMs": 1290,
+      "peak": 0.4679,
+      "rms": 0.0843
+    },
+    {
+      "id": "follow-0",
+      "text": "you are walking their line.",
+      "file": "follow-0.wav",
+      "durationMs": 1271,
+      "peak": 0.4398,
+      "rms": 0.0843
+    },
+    {
+      "id": "follow-1",
+      "text": "someone went this way first.",
+      "file": "follow-1.wav",
+      "durationMs": 1449,
+      "peak": 0.4822,
+      "rms": 0.0843
+    },
+    {
+      "id": "follow-2",
+      "text": "you took their path.",
+      "file": "follow-2.wav",
+      "durationMs": 1085,
+      "peak": 0.4092,
+      "rms": 0.0843
+    },
+    {
+      "id": "together-0",
+      "text": "you arrived together.",
+      "file": "together-0.wav",
+      "durationMs": 1120,
+      "peak": 0.431,
+      "rms": 0.0843
+    },
+    {
+      "id": "together-1",
+      "text": "two of you, at once.",
+      "file": "together-1.wav",
+      "durationMs": 1227,
+      "peak": 0.817,
+      "rms": 0.0843
+    },
+    {
+      "id": "revisit-0",
+      "text": "you stood here before.",
+      "file": "revisit-0.wav",
+      "durationMs": 1233,
+      "peak": 0.4819,
+      "rms": 0.0843
+    },
+    {
+      "id": "revisit-1",
+      "text": "you have come back to it.",
+      "file": "revisit-1.wav",
+      "durationMs": 1178,
+      "peak": 0.523,
+      "rms": 0.0843
+    },
+    {
+      "id": "revisit-2",
+      "text": "this is the same place.",
+      "file": "revisit-2.wav",
+      "durationMs": 1281,
+      "peak": 0.5426,
+      "rms": 0.0843
+    },
+    {
+      "id": "mirror-0",
+      "text": "you are moving the same way.",
+      "file": "mirror-0.wav",
+      "durationMs": 1323,
+      "peak": 0.5125,
+      "rms": 0.0843
+    },
+    {
+      "id": "mirror-1",
+      "text": "apart, and in step.",
+      "file": "mirror-1.wav",
+      "durationMs": 1213,
+      "peak": 0.602,
+      "rms": 0.0843
+    }
+  ]
+}

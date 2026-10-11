@@ -1,0 +1,6 @@
+# Pinned to stable on purpose. A gallery machine rebuilt six months from now
+# must produce the same engine; "whatever nightly is current" does not.
+[toolchain]
+channel = "1.98.1"
+components = ["clippy", "rustfmt"]
+targets = ["wasm32-unknown-unknown"]
